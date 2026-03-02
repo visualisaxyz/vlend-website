@@ -1,6 +1,7 @@
 import Reveal from "./Reveal";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "#";
+const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL || "https://dapp.visualisa.xyz/";
 
 export default function CTA() {
   return (
@@ -29,10 +30,10 @@ export default function CTA() {
           </p>
           <div className="cta-actions">
             <a href={APP_URL} className="btn-primary">
-              Open App <span style={{ opacity: 0.7 }}>→</span>
+              Open dApp <span style={{ opacity: 0.7 }}>→</span>
             </a>
             <a
-              href="https://github.com/visualisaxyz/vlend"
+              href="https://github.com/orgs/visualisaxyz/repositories"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-ghost"

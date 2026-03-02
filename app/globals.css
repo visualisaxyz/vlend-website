@@ -145,14 +145,14 @@ nav.scrolled {
   width: 32px;
   height: 32px;
   border-radius: 9px;
-  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
   font-weight: 700;
   color: #fff;
-  box-shadow: 0 0 18px var(--green-glow);
+  box-shadow: none;
 }
 
 .nav-links {
@@ -1072,7 +1072,7 @@ section {
 /* FOOTER */
 footer {
   border-top: 1px solid var(--border);
-  padding: 40px 0;
+  padding: 40px 32px;
   position: relative;
   z-index: 2;
 }
@@ -1088,15 +1088,38 @@ footer {
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   color: var(--muted);
+}
+
+.footer-logo-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.footer-logo-text {
+  margin-left: 2px;
+}
+
+.footer-badge {
+  font-size: 10px;
+  color: var(--dim);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 5px;
+  letter-spacing: 0.1em;
 }
 
 .footer-links {
   display: flex;
-  gap: 24px;
+  gap: 32px;
 }
 
 .footer-links a {
@@ -1104,6 +1127,7 @@ footer {
   color: var(--dim);
   text-decoration: none;
   transition: color 0.2s;
+  letter-spacing: 0.02em;
 }
 
 .footer-links a:hover {

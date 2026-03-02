@@ -21,13 +21,16 @@ const phases = [
   },
   {
     status: "active",
-    badge: "⬤ In Progress — Q2 2025",
+    badge: "⬤ In Progress — Q2 2026",
     title: "Liquidity & Token Launch",
     desc: "Bootstrap vUSD liquidity and officially distribute VLEND to the community through a public launch.",
     items: [
       { text: "Launch vUSD/USDC Uniswap v3 pool", done: false },
-      { text: "Seed $500K initial liquidity via treasury", done: false },
-      { text: "VLEND public launch via launchpad (5M tokens)", done: false },
+      { text: "Seed $100K initial liquidity via treasury", done: false },
+      {
+        text: "VLEND public launch via launchpad (2,250,000 VLEND)",
+        done: false,
+      },
       { text: "VLEND/ETH pool & initial price discovery", done: false },
       { text: "Liquidity mining incentives for vUSD LPs", done: false },
     ],
@@ -35,21 +38,28 @@ const phases = [
   },
   {
     status: "upcoming",
-    badge: "Q3 2025",
+    badge: "Q3 2026",
     title: "Governance & Collateral Expansion",
     desc: "Decentralise protocol control. Add new collateral types to attract a broader user base and grow TVL.",
     items: [
       { text: "On-chain governance via VLEND token", done: false },
-      { text: "Add stETH / wstETH as collateral", done: false },
-      { text: "Add cbETH and rETH support", done: false },
-      { text: "Collateral-specific risk parameters via governance", done: false },
+      { text: "Add wstETH as collateral", done: false },
+      {
+        text: "Add BTC.b / LBTC (Lombard Bitcoin) as collateral",
+        done: false,
+      },
+      { text: "Add USDm as collateral", done: false },
+      {
+        text: "Collateral-specific risk parameters via governance",
+        done: false,
+      },
       { text: "Borrow rate governance module", done: false },
     ],
     side: "left",
   },
   {
     status: "upcoming",
-    badge: "Q4 2025",
+    badge: "Q4 2026",
     title: "Advanced Strategies",
     desc: "Power-user primitives that unlock sophisticated DeFi strategies on top of the vLend base layer.",
     items: [
@@ -63,7 +73,7 @@ const phases = [
   },
   {
     status: "upcoming",
-    badge: "Q1 2026",
+    badge: "Q1 2027",
     title: "Ethereum Mainnet",
     desc: "Bring vLend to the biggest DeFi market. Full protocol deployment on Ethereum L1 with native integrations.",
     items: [
@@ -77,7 +87,7 @@ const phases = [
   },
   {
     status: "upcoming",
-    badge: "2026 +",
+    badge: "2027 +",
     title: "Multichain. Unstoppable.",
     desc: "Expand beyond Ethereum. Make vUSD a cross-chain stablecoin. Position VLEND as the governance backbone of a multichain lending network.",
     items: [
@@ -109,7 +119,7 @@ export default function Roadmap() {
           fill.style.height = "30%";
         }, 400);
       },
-      { threshold: 0.05 }
+      { threshold: 0.05 },
     );
 
     observer.observe(section);
@@ -171,8 +181,8 @@ export default function Roadmap() {
                           phase.status === "done"
                             ? "done-card"
                             : phase.status === "active"
-                            ? "active-card"
-                            : ""
+                              ? "active-card"
+                              : ""
                         }`}
                       >
                         <span
@@ -180,8 +190,8 @@ export default function Roadmap() {
                             phase.status === "done"
                               ? "done"
                               : phase.status === "active"
-                              ? "active"
-                              : "upcoming"
+                                ? "active"
+                                : "upcoming"
                           }`}
                         >
                           {phase.badge}
@@ -207,8 +217,8 @@ export default function Roadmap() {
                                 {item.done
                                   ? "✓"
                                   : phase.status === "active"
-                                  ? "→"
-                                  : "◦"}
+                                    ? "→"
+                                    : "◦"}
                               </span>
                               {item.text}
                             </div>
@@ -223,11 +233,13 @@ export default function Roadmap() {
                         phase.status === "done"
                           ? "done"
                           : phase.status === "active"
-                          ? "active"
-                          : ""
+                            ? "active"
+                            : ""
                       }`}
                       style={
-                        phase.status === "active" ? { position: "relative" } : {}
+                        phase.status === "active"
+                          ? { position: "relative" }
+                          : {}
                       }
                     />
                   </div>
@@ -242,11 +254,13 @@ export default function Roadmap() {
                         phase.status === "done"
                           ? "done"
                           : phase.status === "active"
-                          ? "active"
-                          : ""
+                            ? "active"
+                            : ""
                       }`}
                       style={
-                        phase.status === "active" ? { position: "relative" } : {}
+                        phase.status === "active"
+                          ? { position: "relative" }
+                          : {}
                       }
                     />
                   </div>
@@ -260,8 +274,8 @@ export default function Roadmap() {
                           phase.status === "done"
                             ? "done-card"
                             : phase.status === "active"
-                            ? "active-card"
-                            : ""
+                              ? "active-card"
+                              : ""
                         }`}
                       >
                         <span
@@ -269,8 +283,8 @@ export default function Roadmap() {
                             phase.status === "done"
                               ? "done"
                               : phase.status === "active"
-                              ? "active"
-                              : "upcoming"
+                                ? "active"
+                                : "upcoming"
                           }`}
                         >
                           {phase.badge}
@@ -296,8 +310,8 @@ export default function Roadmap() {
                                 {item.done
                                   ? "✓"
                                   : phase.status === "active"
-                                  ? "→"
-                                  : "◦"}
+                                    ? "→"
+                                    : "◦"}
                               </span>
                               {item.text}
                             </div>

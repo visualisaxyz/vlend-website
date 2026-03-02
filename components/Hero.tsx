@@ -1,105 +1,101 @@
-"use client";
+import HeroClient from "./HeroClient";
 
-import { useEffect, useRef } from "react";
+type ProtocolStatsData = {
+  tvl?: string;
+  circulatingVusd?: string;
+  vusdInStabilityPool?: string;
+  totalVaultsCreated?: number;
+  collateralData?: {
+    tokenName?: string;
+    mcr?: number;
+    mlr?: number;
+  }[];
+};
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "#";
+type HeroStat = {
+  value: number;
+  prefix: string;
+  suffix: string;
+  label: string;
+  decimals: number;
+};
 
-const heroStats = [
-  { value: 14.2, prefix: "$", suffix: "M", label: "Total Value Locked", decimals: 1 },
-  { value: 8.1, prefix: "", suffix: "M", label: "vUSD in Circulation", decimals: 1 },
-  { value: 312, prefix: "", suffix: "", label: "Active Vaults", decimals: 0 },
-  { value: 110, prefix: "", suffix: "%", label: "Minimum CR", decimals: 0 },
-];
-
-function animateCounter(
-  el: HTMLElement,
-  target: number,
-  decimals: number,
-  duration: number
-) {
-  let start: number | null = null;
-  const step = (ts: number) => {
-    if (!start) start = ts;
-    const prog = Math.min((ts - start) / duration, 1);
-    const eased = 1 - Math.pow(1 - prog, 4);
-    const val = (target * eased).toFixed(decimals);
-    el.textContent = val;
-    if (prog < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
+function getApiBaseUrl() {
+  return process.env.VLEND_API_URL || "https://api.vlend.visualisa.xyz";
 }
 
-export default function Hero() {
-  const statsAnimated = useRef(false);
+async function fetchProtocolStats(): Promise<ProtocolStatsData | null> {
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/protocolStats`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) {
+      return null;
+    }
 
-  useEffect(() => {
-    if (statsAnimated.current) return;
-    const timer = setTimeout(() => {
-      const statVals = document.querySelectorAll(".hero-stat-val span");
-      statVals.forEach((el, i) => {
-        const config = heroStats[i];
-        animateCounter(
-          el as HTMLElement,
-          config.value,
-          config.decimals,
-          2000 + i * 200
-        );
-      });
-      statsAnimated.current = true;
-    }, 600);
-    return () => clearTimeout(timer);
-  }, []);
+    const body = await res.json();
 
-  return (
-    <section id="hero">
-      <div
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-          position: "relative",
-          zIndex: 2,
-        }}
-      >
-        <div className="hero-eyebrow">
-          <span className="eyebrow-dot" />
-          Live on MegaETH Mainnet
-        </div>
-        <h1 className="hero-title">
-          Borrow
-          <br />
-          <span className="accent">Without</span>
-          <br />
-          <span className="dim-word">Limits</span>
-        </h1>
-        <p className="hero-sub">
-          Deposit WETH. Mint vUSD. Keep full exposure to your collateral while
-          unlocking liquidity at a minimum 110% collateral ratio.
-        </p>
-        <div className="hero-actions">
-          <a href={APP_URL} className="btn-primary">
-            Open App <span style={{ opacity: 0.7 }}>→</span>
-          </a>
-          <a href="#how" className="btn-ghost">
-            How it works
-          </a>
-        </div>
-        <div className="hero-stats">
-          {heroStats.map((stat, i) => (
-            <div key={i} className="hero-stat">
-              <span className="hero-stat-val">
-                {stat.prefix}
-                <span>0</span>
-                {stat.suffix}
-              </span>
-              <span className="hero-stat-label">{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="scroll-hint">
-        <span>SCROLL</span>
-        <div className="scroll-line" />
-      </div>
-    </section>
-  );
+    if (Array.isArray(body?.data) && body.data.length > 0) {
+      const latest = body.data[0];
+      return (latest && (latest.data as ProtocolStatsData)) || null;
+    }
+
+    if (body && typeof body === "object") {
+      return body as ProtocolStatsData;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
 }
+
+export default async function Hero() {
+  const stats = await fetchProtocolStats();
+
+  const tvlRaw = stats?.tvl ? parseFloat(stats.tvl) : 14_200_000;
+  const vusdRaw = stats?.circulatingVusd
+    ? parseFloat(stats.circulatingVusd)
+    : 8_100_000;
+  const activeVaults = stats?.totalVaultsCreated ?? 312;
+
+  const weth =
+    stats?.collateralData?.find(
+      (c) => c && c.tokenName && c.tokenName.toUpperCase() === "WETH",
+    ) ?? null;
+  const minCr = weth?.mlr ?? 110;
+
+  const heroStats: HeroStat[] = [
+    {
+      value: tvlRaw / 1_000_000,
+      prefix: "$",
+      suffix: "M",
+      label: "Total Value Locked",
+      decimals: 1,
+    },
+    {
+      value: vusdRaw / 1_000_000,
+      prefix: "",
+      suffix: "M",
+      label: "vUSD in Circulation",
+      decimals: 1,
+    },
+    {
+      value: activeVaults,
+      prefix: "",
+      suffix: "",
+      label: "Active Vaults",
+      decimals: 0,
+    },
+    {
+      value: minCr,
+      prefix: "",
+      suffix: "%",
+      label: "Minimum CR",
+      decimals: 0,
+    },
+  ];
+
+  return <HeroClient stats={heroStats} />;
+}
+

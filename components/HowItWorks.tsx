@@ -12,7 +12,7 @@ const cards = [
     num: "02",
     icon: "⚡",
     title: "Mint vUSD",
-    desc: "Borrow vUSD against your collateral at a minimum 110% CR. One transaction with the VaultFactoryZapper.",
+    desc: "Borrow vUSD against your collateral at a minimum 110% CR. Deposit & Mint in one transaction.",
     tag: "0.5% borrow fee",
   },
   {
@@ -26,7 +26,7 @@ const cards = [
     num: "04",
     icon: "💎",
     title: "Earn with VLEND",
-    desc: "Stake vUSD in the Stability Pool to backstop liquidations and earn WETH + VLEND rewards passively.",
+    desc: "Stake vUSD in the Stability Pool to backstop liquidations and earn VLEND rewards passively.",
     tag: "Stability Pool",
   },
 ];
