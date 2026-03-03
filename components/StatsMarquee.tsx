@@ -18,6 +18,15 @@ function getApiBaseUrl() {
   return process.env.VLEND_API_URL || "https://api.vlend.visualisa.xyz";
 }
 
+type VaultOverview = {
+  tvl?: string;
+  debtHuman?: string;
+};
+
+type StabilityPoolOverview = {
+  totalVusdStakedHuman?: string;
+};
+
 async function fetchProtocolStats(): Promise<ProtocolStatsData | null> {
   try {
     const res = await fetch(`${getApiBaseUrl()}/protocolStats`, {
@@ -44,6 +53,43 @@ async function fetchProtocolStats(): Promise<ProtocolStatsData | null> {
     return null;
   } catch {
     return null;
+  }
+}
+
+async function fetchVaultsAndStabilityPool(): Promise<{
+  vaults: VaultOverview[];
+  stabilityPool: StabilityPoolOverview | null;
+  totalTvl: number;
+}> {
+  try {
+    const base = getApiBaseUrl();
+    const [vaultsRes, spRes, tvlRes] = await Promise.all([
+      fetch(`${base}/vaults/overview`, { next: { revalidate: 60 } }),
+      fetch(`${base}/stability_pool/overview`, {
+        next: { revalidate: 60 },
+      }),
+      fetch(`${base}/tvl`, { next: { revalidate: 60 } }),
+    ]);
+
+    const vaultsBody = vaultsRes.ok ? await vaultsRes.json() : [];
+    const spBody = spRes.ok ? await spRes.json() : null;
+    const tvlBody = tvlRes.ok ? await tvlRes.json() : null;
+
+    const vaults: VaultOverview[] = Array.isArray(vaultsBody)
+      ? vaultsBody
+      : [];
+
+    const stabilityPool: StabilityPoolOverview | null =
+      spBody && typeof spBody === "object" ? spBody : null;
+
+    const totalTvl =
+      typeof tvlBody === "number"
+        ? tvlBody
+        : tvlBody?.tvl ?? tvlBody?.totalTvl ?? 0;
+
+    return { vaults, stabilityPool, totalTvl };
+  } catch {
+    return { vaults: [], stabilityPool: null, totalTvl: 0 };
   }
 }
 
@@ -76,16 +122,36 @@ type MarqueeItem = {
 };
 
 export default async function StatsMarquee() {
-  const stats = await fetchProtocolStats();
+  const [stats, aggregates] = await Promise.all([
+    fetchProtocolStats(),
+    fetchVaultsAndStabilityPool(),
+  ]);
 
-  const tvl = stats?.tvl ? parseFloat(stats.tvl) : null;
-  const vusdSupply = stats?.circulatingVusd
-    ? parseFloat(stats.circulatingVusd)
-    : null;
-  const activeVaults = stats?.totalVaultsCreated ?? null;
-  const spDeposits = stats?.vusdInStabilityPool
-    ? parseFloat(stats.vusdInStabilityPool)
-    : null;
+  const statsTvl = stats?.tvl ? parseFloat(stats.tvl) : 0;
+  const protocolTvlRaw =
+    statsTvl > 0 ? statsTvl : aggregates.totalTvl > 0 ? aggregates.totalTvl : 0;
+  const tvl = protocolTvlRaw > 0 ? protocolTvlRaw / 10 : null;
+
+  const vusdFromVaults = aggregates.vaults.reduce(
+    (sum, v) => sum + (parseFloat(v.debtHuman ?? "0") || 0),
+    0,
+  );
+  const vusdSupply =
+    vusdFromVaults > 0
+      ? vusdFromVaults
+      : stats?.circulatingVusd
+        ? parseFloat(stats.circulatingVusd)
+        : null;
+  const activeVaults =
+    aggregates.vaults.length > 0
+      ? aggregates.vaults.length
+      : stats?.totalVaultsCreated ?? null;
+  const spDeposits =
+    aggregates.stabilityPool?.totalVusdStakedHuman != null
+      ? parseFloat(aggregates.stabilityPool.totalVusdStakedHuman)
+      : stats?.vusdInStabilityPool
+        ? parseFloat(stats.vusdInStabilityPool)
+        : null;
 
   const weth =
     stats?.collateralData?.find(
