@@ -74,9 +74,9 @@ export default function HeroClient({ stats }: HeroClientProps) {
         <h1 className="hero-title">
           Borrow
           <br />
-          <span className="accent">Without</span>
+          <span className="accent">Free.</span>
           <br />
-          <span className="dim-word">Limits</span>
+          <span className="dim-word">Forever.</span>
         </h1>
         <p className="hero-sub">
           Deposit WETH. Mint vUSD. Keep full exposure to your collateral while
@@ -115,4 +115,3 @@ export default function HeroClient({ stats }: HeroClientProps) {
     </section>
   );
 }
-
