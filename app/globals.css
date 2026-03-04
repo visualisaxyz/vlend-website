@@ -1190,7 +1190,7 @@ footer {
 /* Responsive */
 @media (max-width: 768px) {
   .how-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 
   .features-header {
@@ -1206,8 +1206,101 @@ footer {
     grid-template-columns: 1fr;
   }
 
+  /* Roadmap: stacked full-width cards, dot-only timeline (desktop unchanged) */
+  #roadmap {
+    padding-bottom: 24px;
+  }
+
+  #roadmap .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  #roadmap .roadmap-header {
+    margin-bottom: 48px;
+  }
+
+  #roadmap .roadmap-header p {
+    font-size: 14px;
+    padding: 0 8px;
+  }
+
+  .roadmap-line,
+  .roadmap-line-fill {
+    display: none;
+  }
+
   .roadmap-phase {
-    grid-template-columns: 1fr 40px 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 40px;
+  }
+
+  .roadmap-phase:last-child {
+    margin-bottom: 0;
+  }
+
+  .roadmap-phase .phase-spacer {
+    display: none;
+  }
+
+  .roadmap-phase .phase-node {
+    display: none;
+  }
+
+  .roadmap-phase .phase-content {
+    grid-column: unset;
+    grid-row: unset;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 !important;
+    min-width: 0;
+    text-align: left !important;
+  }
+
+  .roadmap-phase .phase-card {
+    width: 100%;
+    padding: 20px 20px 24px;
+    min-width: 0;
+    overflow: visible;
+    border-left-style: solid;
+  }
+
+  .roadmap-phase .phase-card.done-card {
+    border-left-width: 3px;
+    border-left-color: var(--green);
+  }
+
+  .roadmap-phase .phase-card.active-card {
+    border-left-width: 2px;
+    border-left-color: rgba(234, 179, 8, 0.6);
+  }
+
+  .roadmap-phase .phase-card:not(.done-card):not(.active-card) {
+    border-left-width: 2px;
+    border-left-color: var(--border);
+  }
+
+  .roadmap-phase .phase-title {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+
+  .roadmap-phase .phase-desc {
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+
+  .roadmap-phase .phase-items {
+    gap: 6px;
+  }
+
+  .roadmap-phase .phase-item {
+    font-size: 13px;
+    line-height: 1.55;
   }
 
   .hero-stats {

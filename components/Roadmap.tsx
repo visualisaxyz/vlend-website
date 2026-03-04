@@ -243,11 +243,11 @@ export default function Roadmap() {
                       }
                     />
                   </div>
-                  <div style={{ gridColumn: 3 }} />
+                  <div className="phase-spacer" style={{ gridColumn: 3 }} aria-hidden />
                 </>
               ) : (
                 <>
-                  <div style={{ gridColumn: 1 }} />
+                  <div className="phase-spacer" style={{ gridColumn: 1 }} aria-hidden />
                   <div className="phase-node">
                     <div
                       className={`phase-dot ${
